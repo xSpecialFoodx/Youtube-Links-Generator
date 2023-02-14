@@ -224,65 +224,62 @@ for item in names:
                     sleeping_amount += 1
 
                 current_link_index_score = link_index_score
-                found_links_index = 0
-                
-                while found_links_index < len(found_links):
-                    found_link = found_links[found_links_index]
+
+                try:
+                    found_links_index = 0
                     
-                    item_link_link = unidecode(found_link.get_attribute("href").strip())
-                    item_link_link_watch_location = item_link_link.find("watch")
-                    
-                    if item_link_link_watch_location <= 0:
-                        found_links.pop(found_links_index)
-                    else:
-                        found_links_index += 1
-                    
-                index = 0
-                for x in found_links:
-                    try:
-                        item_link_link = unidecode(x.get_attribute("href").strip())
+                    while found_links_index < len(found_links):
+                        found_link = found_links[found_links_index]
+                        
+                        item_link_link = unidecode(found_link.get_attribute("href").strip())
                         item_link_link_watch_location = item_link_link.find("watch")
                         
-                        if item_link_link_watch_location > 0:
-                            item_link_link_ampersent_location = item_link_link.find("&")
+                        if item_link_link_watch_location <= 0:
+                            found_links.pop(found_links_index)
+                        else:
+                            found_links_index += 1
+                            
+                    index = 0
 
-                            if item_link_link_ampersent_location > 0:
-                                item_link_link = item_link_link[:item_link_link_ampersent_location]
+                    for x in found_links:
+                        item_link_link = unidecode(x.get_attribute("href").strip())
+                        item_link_link_ampersent_location = item_link_link.find("&")
 
-                            item_link_title = unidecode(x.get_attribute("title").strip())
-                            item_link_name_partial_score = fuzz.partial_ratio(item.upper(), item_link_title.upper()) * link_name_partial_score / 100
-                            bigger_length = len(item_search) if len(item_search) > len(item_link_title) else len(item_link_title)
-                            item_link_name_score = fuzz.partial_ratio(item.upper(), item_link_title.upper()) * (100 - Levenshtein.distance(item_search.upper(), item_link_title.upper()) / bigger_length * 100) / 100 * link_name_score / 100
-                            item_link_name_total_score = (item_link_name_score + item_link_name_partial_score)
-                            item_link_title_splitted = item_link_title.split(" ")
-                            max_item_link_special_words_score = 0
-                            current_item_link_special_words_score = 0
-                            for item_link_title_splitted_cell in item_link_title_splitted:
-                                for special_word in special_words:
-                                    bigger_length = len(special_word) if len(special_word) > len(item_link_title_splitted_cell) else len(item_link_title_splitted_cell)
-                                    smaller_length = len(special_word) if len(special_word) < len(item_link_title_splitted_cell) else len(item_link_title_splitted_cell)
-                                    
-                                    current_item_link_special_words_score = (
-                                        (100 - Levenshtein.distance(special_word.upper(), item_link_title_splitted_cell.upper()) / bigger_length * 100)
-                                        * smaller_length / bigger_length
-                                        * special_words[special_word] / 100
-                                        * link_special_words_score / 100
-                                    )
-                                    
-                                    if current_item_link_special_words_score > max_item_link_special_words_score:
-                                        max_item_link_special_words_score = current_item_link_special_words_score
+                        if item_link_link_ampersent_location > 0:
+                            item_link_link = item_link_link[:item_link_link_ampersent_location]
 
-                            item_link_special_words_score = max_item_link_special_words_score
-                            item_link_score = current_link_index_score + item_link_name_score + item_link_name_partial_score + item_link_special_words_score
-                            item_link = {"index": index, "link": item_link_link, "title": item_link_title, "score": item_link_score}
-                            item_links.append(item_link)
-                    except:
-                        error_found = True
-                        
-                        break
+                        item_link_title = unidecode(x.get_attribute("title").strip())
+                        item_link_name_partial_score = fuzz.partial_ratio(item.upper(), item_link_title.upper()) * link_name_partial_score / 100
+                        bigger_length = len(item_search) if len(item_search) > len(item_link_title) else len(item_link_title)
+                        item_link_name_score = fuzz.partial_ratio(item.upper(), item_link_title.upper()) * (100 - Levenshtein.distance(item_search.upper(), item_link_title.upper()) / bigger_length * 100) / 100 * link_name_score / 100
+                        item_link_name_total_score = (item_link_name_score + item_link_name_partial_score)
+                        item_link_title_splitted = item_link_title.split(" ")
+                        max_item_link_special_words_score = 0
+                        current_item_link_special_words_score = 0
+                        for item_link_title_splitted_cell in item_link_title_splitted:
+                            for special_word in special_words:
+                                bigger_length = len(special_word) if len(special_word) > len(item_link_title_splitted_cell) else len(item_link_title_splitted_cell)
+                                smaller_length = len(special_word) if len(special_word) < len(item_link_title_splitted_cell) else len(item_link_title_splitted_cell)
+                                
+                                current_item_link_special_words_score = (
+                                    (100 - Levenshtein.distance(special_word.upper(), item_link_title_splitted_cell.upper()) / bigger_length * 100)
+                                    * smaller_length / bigger_length
+                                    * special_words[special_word] / 100
+                                    * link_special_words_score / 100
+                                )
+                                
+                                if current_item_link_special_words_score > max_item_link_special_words_score:
+                                    max_item_link_special_words_score = current_item_link_special_words_score
 
-                    index += 1
-                    current_link_index_score = link_index_score * calculate_logarithmic_scaling(index / len(found_links) * 100, False, True) / 100
+                        item_link_special_words_score = max_item_link_special_words_score
+                        item_link_score = current_link_index_score + item_link_name_score + item_link_name_partial_score + item_link_special_words_score
+                        item_link = {"index": index, "link": item_link_link, "title": item_link_title, "score": item_link_score}
+                        item_links.append(item_link)
+
+                        index += 1
+                        current_link_index_score = link_index_score * calculate_logarithmic_scaling(index / len(found_links) * 100, False, True) / 100
+                except:
+                    error_found = True
                     
                 if error_found is True:
                     error_found = False
