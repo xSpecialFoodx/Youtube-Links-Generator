@@ -133,16 +133,29 @@ def calculate_logarithmic_scaling(percentage, scale_up):
     #
     # so the range is between 0 to 92
     
-    current_percentage = (
-        236.209
-        - 29.2138 * math.log(
-            33.8317 * (percentage * 92 / 100)
-            + 105.902
+    if scale_fast is True:
+        current_percentage = (
+            236.209
+            - 29.2138 * math.log(
+                33.8317 * (percentage * 92 / 100)
+                + 105.902
+            )
         )
-    )
-    
-    if scale_up is True:
-        current_percentage = 100 - current_percentage
+        
+        if scale_up is True:
+            current_percentage = 100 - current_percentage
+    else:
+        current_percentage = (
+            236.209
+            - 29.2138 * math.log(
+                33.8317 * ((100 - percentage) * 92 / 100)
+                + 105.902
+            )
+        )
+        
+        if scale_up is False:
+            current_percentage = 100 - current_percentage
+        
     
     return current_percentage
 
@@ -256,7 +269,7 @@ for item in names:
                         break
 
                     index += 1
-                    current_link_index_score = link_index_score * calculate_logarithmic_scaling(index / len(found_links) * 100, False) / 100
+                    current_link_index_score = link_index_score * calculate_logarithmic_scaling(index / len(found_links) * 100, False, True) / 100
                     
                 if error_found is True:
                     error_found = False
