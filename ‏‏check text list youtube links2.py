@@ -95,7 +95,7 @@ def check_playlist_watch(item_link_link_id, playlist_id):
     return "https://www.youtube.com/watch?v=" + item_link_link_id + "&list=" + playlist_id
 
 
-def calculate_logarithmic_scaling(percentage, scale_up):
+def calculate_logarithmic_scaling(percentage, scale_up, scale_fast):
     # used "https://www.dcode.fr/function-equation-finder" in order to make a logarithmic equation
     # with the points (1, 94), (100, 0)
     # used 94 because we want it to be close to 100 at x = 0
