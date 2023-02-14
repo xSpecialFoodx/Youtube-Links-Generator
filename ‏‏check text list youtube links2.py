@@ -224,6 +224,19 @@ for item in names:
                     sleeping_amount += 1
 
                 current_link_index_score = link_index_score
+                found_links_index = 0
+                
+                while found_links_index < len(found_links):
+                    found_link = found_links[found_links_index]
+                    
+                    item_link_link = unidecode(found_link.get_attribute("href").strip())
+                    item_link_link_watch_location = item_link_link.find("watch")
+                    
+                    if item_link_link_watch_location <= 0:
+                        found_links.pop(found_links_index)
+                    else:
+                        found_links_index += 1
+                    
                 index = 0
                 for x in found_links:
                     try:
