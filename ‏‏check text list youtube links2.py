@@ -22,6 +22,7 @@ create_playlists = True
 file_path = r"C:\sometextfile.txt"
 editted_file_path = r"C:\sometextfile-links.txt"
 database_file_path = r"C:\database-links.txt"
+chromedriver_path = r'C:\chromedriver.exe'
 
 search_additional_text = ' ' + "gameplay"
 special_words = {"gameplay": 90, "walkthrough": 75, "playthrough": 75, "game": 40}
@@ -162,7 +163,7 @@ def calculate_logarithmic_scaling(percentage, scale_up, scale_fast):
 opt = Options()
 opt.add_argument("--incognito")
 
-driver = webdriver.Chrome(executable_path=r'C:\chromedriver.exe', chrome_options=opt)
+driver = webdriver.Chrome(executable_path=chromedriver_path, chrome_options=opt)
 
 driver.get("http://youtube.com")
     
